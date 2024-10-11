@@ -3,5 +3,5 @@
 #
 # Builds the firmware.hex file from the PIO workspace
 
-cd ~/teensy_ws/cougars
+cd ~/teensy_ws/agrobot
 pio run

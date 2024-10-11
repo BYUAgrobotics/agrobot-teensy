@@ -26,8 +26,6 @@ cleanup() {
 }
 trap cleanup SIGINT
 
-sudo bash ~/teensy_ws/power.sh on
-
 if [ -z "$(tycmd list | grep Teensy)" ]; then
     echo ""
     printError "No Teensy boards avaliable to connect to"
@@ -45,34 +43,6 @@ source ~/ros2_ws/install/setup.bash
 echo ""
 echo "LISTING FOUND TOPICS..."
 ros2 topic list
-
-echo ""
-echo "LISTENING TO TOPIC 'PRESSURE/DATA'..."
-ros2 topic echo --once /pressure/data
-
-# echo ""
-# echo "LISTENING TO TOPIC 'LEAK/DATA'..."
-# ros2 topic echo --once /leak/data
-
-# echo ""
-# echo "LISTENING TO TOPIC 'BATTERY/DATA'..."
-# ros2 topic echo --once /battery/data
-
-echo ""
-echo "TESTING TOP SERVO, PUBLISHING TO 'KINEMATICS/COMMAND'..."
-ros2 topic pub -1 /kinematics/command frost_interfaces/msg/UCommand '{fin: [45, 0, 0, 0], thruster: 0}'
-
-echo ""
-echo "TESTING SIDE SERVOS, PUBLISHING TO 'KINEMATICS/COMMAND'..."
-ros2 topic pub -1 /kinematics/command frost_interfaces/msg/UCommand '{fin: [0, 45, 45, 0], thruster: 0}'
-
-echo ""
-echo "TESTING THRUSTER (ON), PUBLISHING TO 'KINEMATICS/COMMAND'..."
-ros2 topic pub -1 /kinematics/command frost_interfaces/msg/UCommand '{fin: [0, 0, 0, 0], thruster: 10}'
-
-echo ""
-echo "TESTING THRUSTER (OFF), PUBLISHING TO 'KINEMATICS/COMMAND'..."
-ros2 topic pub -1 /kinematics/command frost_interfaces/msg/UCommand '{fin: [0, 0, 0, 0], thruster: 0}'
 
 echo ""
 echo "TEST COMPLETE"
