@@ -16,11 +16,9 @@ function printError {
 }
 
 if [ -z "$(tycmd list | grep Teensy)" ]; then
-    echo ""
-    printError "No Teensy boards avaliable to connect to"
-    echo ""
-
+  printError "No Teensy boards avaliable to connect to"
+  exit 1
 else 
-    source ~/microros_ws/install/setup.bash
-    ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 6000000
+  source ~/microros_ws/install/setup.bash
+  ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 6000000
 fi

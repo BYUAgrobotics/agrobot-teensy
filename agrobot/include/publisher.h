@@ -29,21 +29,21 @@
 /**
  * @author Nelson Durrant
  * @date September 2024
- * @brief Base class for publishers
+ * 
+ * Base class for publishers
  */
 class Publisher {
 
 public:
   /**
-   * @brief This function sets up the publisher. It must be implemented by the derived
-   * class.
+   * This function sets up the publisher. It must be implemented by the derived class.
    * 
    * @param node the micro-ROS node
    */
   virtual void setup(rcl_node_t node) = 0;
 
   /**
-   * @brief This function destroys the publisher.
+   * This function destroys the publisher.
    * 
    * @param node the micro-ROS node
    */
