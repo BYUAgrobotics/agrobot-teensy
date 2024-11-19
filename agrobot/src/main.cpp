@@ -15,7 +15,7 @@
  * - TODO: Add other publishers
  *
  *
- * IMPORTANT! For a example of a larger micro-ROS project that follows this
+ * IMPORTANT! For an example of a larger micro-ROS project that follows this
  * approach, see: https://github.com/BYU-FRoSt-Lab/cougars-teensy.git
  */
 
