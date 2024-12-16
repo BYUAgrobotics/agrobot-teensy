@@ -302,6 +302,7 @@ void loop() {
     };
     break;
 
+//loop that runs when microros agent is connected
   case AGENT_CONNECTED:
     EXECUTE_EVERY_N_MS(200, state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_CONNECTED : AGENT_DISCONNECTED;);
     if (state == AGENT_CONNECTED) {
