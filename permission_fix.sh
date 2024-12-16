@@ -3,4 +3,4 @@
 #
 # Quick Teensy permission fix
 
-sudo chmod 777 /dev/hidraw0
+sudo chmod 777 /dev/*
