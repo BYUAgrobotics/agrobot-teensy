@@ -198,7 +198,7 @@ bool create_entities() {
     RCCHECK(rclc_subscription_init_default(
         &led_command_sub, &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(agrobot_interfaces, msg, LEDCommand),
-        "/LED/command"));
+        "/led/command"));
 
   // create executor
     RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
