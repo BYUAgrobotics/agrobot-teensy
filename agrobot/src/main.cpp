@@ -198,13 +198,13 @@ bool create_entities() {
     RCCHECK(rclc_subscription_init_default(
         &led_command_sub, &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(agrobot_interfaces, msg, LEDCommand),
-        NAMESPACE "/LED/command"));
+        "/LED/command"));
 
   // create executor
     RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
 
   // add callbacks to executor
-    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &led_command_sub, &command_msg, &led_command_callback, ON_NEW_DATA));
+    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &led_command_sub, &msg, &led_command_callback, ON_NEW_DATA));
 
 #ifdef ENABLE_BT_DEBUG
   BTSerial.println("[INFO] Micro-ROS entities created successfully");
