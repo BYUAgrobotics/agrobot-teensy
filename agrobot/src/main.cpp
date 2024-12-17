@@ -315,6 +315,9 @@ void loop() {
     digitalWrite(BAD_LED, LOW);
   } else {
     digitalWrite(LED_PIN, HIGH);
+    digitalWrite(LARGE_LED, HIGH);
+    digitalWrite(SMALL_LED, HIGH);
+    digitalWrite(BAD_LED, HIGH);
   }
 
   // fail safe for agent disconnect
