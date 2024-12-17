@@ -196,7 +196,7 @@ bool create_entities() {
 
   // create subscribers
     RCCHECK(rclc_subscription_init_default(
-        &command_sub, &node,
+        &led_command_sub, &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(agrobot_interfaces, msg, LEDCommand),
         NAMESPACE "/LED/command"));
 
@@ -204,7 +204,7 @@ bool create_entities() {
     RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
 
   // add callbacks to executor
-    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &command_sub, &command_msg, &command_sub_callback, ON_NEW_DATA));
+    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &led_command_sub, &command_msg, &led_command_callback, ON_NEW_DATA));
 
 #ifdef ENABLE_BT_DEBUG
   BTSerial.println("[INFO] Micro-ROS entities created successfully");
@@ -225,9 +225,9 @@ void destroy_entities() {
   battery_pub.destroy(node);
 
   // destroy everything else
-  //   if (rcl_subscription_fini(&command_sub, &node) != RCL_RET_OK) {
+  //   if (rcl_subscription_fini(&led_command_sub, &node) != RCL_RET_OK) {
   // #ifdef ENABLE_BT_DEBUG
-  //     BTSerial.println("[WARN] Failed to destroy command_sub");
+  //     BTSerial.println("[WARN] Failed to destroy led_command_sub");
   // #endif // ENABLE_BT_DEBUG
   //   }
   //   rclc_executor_fini(&executor);
