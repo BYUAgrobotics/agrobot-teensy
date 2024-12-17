@@ -9,6 +9,7 @@
  *
  * Subscribes:
  * - TODO: Add other subscribers
+ * - LED/command (agrobot_interfaces/msg/led_command.h)
  *
  * Publishes:
  * - battery_status (agrobot_interfaces/msg/BatteryStatus)
@@ -22,6 +23,7 @@
 #include "battery_pub.h"
 
 #include <SoftwareSerial.h>
+#include <agrobot_interfaces/msg/led_command.h>
 // #include <frost_interfaces/msg/u_command.h>
 
 #define ENABLE_ACTUATORS
@@ -53,6 +55,9 @@
 #define VOLT_PIN 18
 #define CURRENT_PIN 17
 #define LED_PIN 13 // Built-in Teensy LED
+#define LARGE_LED 30  // WHITE
+#define SMALL_LED 31  // GREEN
+#define BAD_LED 32    // RED
 
 // sensor baud rates
 #define BT_DEBUG_RATE 9600
@@ -67,13 +72,13 @@ unsigned long last_received = 0;
 rclc_support_t support;
 rcl_allocator_t allocator;
 rcl_node_t node;
-// rclc_executor_t executor;
+rclc_executor_t executor;
 
 // message objects
-// frost_interfaces__msg__UCommand command_msg;
+agrobot_interfaces__msg__LEDCommand led_command_msg;
 
 // subscriber objects
-// rcl_subscription_t command_sub;
+rcl_subscription_t led_command_sub;
 
 // publisher objects
 BatteryPub battery_pub;
@@ -99,15 +104,40 @@ void error_loop() {
   }
 }
 
-// /**
-//  * Callback function for the "kinematics/command" subscriber. This function
-//  is
-//  * called whenever a new control command is received from the micro-ROS
-//  agent.
-//  * The function updates the actuator positions based on the received command.
-//  *
-//  * @param command_msgin The received frost_interfaces/msg/UCommand message
-//  */
+/**
+ * Callback function for the "kinematics/command" subscriber. This function
+ is
+ * called whenever a new control command is received from the micro-ROS
+ agent.
+ * The function updates the actuator positions based on the received command.
+ *
+ * @param command_msgin The received frost_interfaces/msg/UCommand message
+ */
+
+ void led_command_callback(const void * msgin) {
+    const agrobot_interfaces__msg__LEDCommand * msg = (const agrobot_interfaces__msg__LEDCommand *)msgin;
+    int8_t led_value = msg->command;
+    Serial.printf("Received LED command: %d\n", led_value);
+
+     // First, turn off all LEDs
+    digitalWrite(LARGE_LED, LOW);
+    digitalWrite(SMALL_LED, LOW);
+    digitalWrite(BAD_LED, LOW);
+
+   // Turn on the LED corresponding to the command
+    if (led_value == 1) {
+        // Small LED -- GREEN
+      digitalWrite(SMALL_LED, HIGH);
+    } else if (led_value == 2) {
+        // Large LED -- WHITE
+      digitalWrite(LARGE_LED, HIGH);
+    } else if (led_value == 3) {
+        // BAD LED -- RED
+      digitalWrite(BAD_LED, HIGH);
+    }
+    
+    // Add code to control the LED based on the received command
+}
 // void command_sub_callback(const void *command_msgin) {
 
 //   last_received = millis();
@@ -164,17 +194,17 @@ bool create_entities() {
   // create publishers
   battery_pub.setup(node);
 
-  // create subscribers
-  //   RCCHECK(rclc_subscription_init_default(
-  //       &command_sub, &node,
-  //       ROSIDL_GET_MSG_TYPE_SUPPORT(frost_interfaces, msg, UCommand),
-  //       NAMESPACE "/kinematics/command"));
+  create subscribers
+    RCCHECK(rclc_subscription_init_default(
+        &command_sub, &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(agrobot_interfaces, msg, LEDCommand),
+        NAMESPACE "/LED/command"));
 
-  // create executor
-  //   RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
+  create executor
+    RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
 
-  // add callbacks to executor
-  //   RCSOFTCHECK(rclc_executor_add_subscription(&executor, &command_sub, &command_msg, &command_sub_callback, ON_NEW_DATA));
+  add callbacks to executor
+    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &command_sub, &command_msg, &command_sub_callback, ON_NEW_DATA));
 
 #ifdef ENABLE_BT_DEBUG
   BTSerial.println("[INFO] Micro-ROS entities created successfully");
@@ -224,6 +254,13 @@ void setup() {
 
   // set up the indicator light
   pinMode(LED_PIN, OUTPUT);
+  pinMode(LARGE_LED, OUTPUT);
+  pinMode(SMALL_LED, OUTPUT);
+  pinMode(BAD_LED, OUTPUT);
+  // Turn all LEDs off by default
+  digitalWrite(LARGE_LED, LOW);
+  digitalWrite(SMALL_LED, LOW);
+  digitalWrite(BAD_LED, LOW);
 
 #ifdef ENABLE_BT_DEBUG
   BTSerial.begin(BT_DEBUG_RATE);
@@ -273,6 +310,9 @@ void loop() {
   // blink the indicator light
   if (millis() % 1000 < 250) {
     digitalWrite(LED_PIN, LOW);
+    digitalWrite(LARGE_LED, LOW);
+    digitalWrite(SMALL_LED, LOW);
+    digitalWrite(BAD_LED, LOW);
   } else {
     digitalWrite(LED_PIN, HIGH);
   }
@@ -314,7 +354,7 @@ void loop() {
       EXECUTE_EVERY_N_MS(BATTERY_MS, read_battery());
 #endif // ENABLE_BATTERY
 
-      // rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+      rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 
       //////////////////////////////////////////////////////////
     }
