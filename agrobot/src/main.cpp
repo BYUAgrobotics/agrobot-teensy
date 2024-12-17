@@ -120,9 +120,9 @@ void error_loop() {
     Serial.printf("Received LED command: %d\n", led_value);
 
      // First, turn off all LEDs
-    digitalWrite(LARGE_LED, LOW);
-    digitalWrite(SMALL_LED, LOW);
-    digitalWrite(BAD_LED, LOW);
+    digitalWrite(LARGE_LED, HIGH);
+    digitalWrite(SMALL_LED, HIGH);
+    digitalWrite(BAD_LED, HIGH);
 
    // Turn on the LED corresponding to the command
     if (led_value == 1) {
