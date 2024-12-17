@@ -258,9 +258,9 @@ void setup() {
   pinMode(SMALL_LED, OUTPUT);
   pinMode(BAD_LED, OUTPUT);
   // Turn all LEDs off by default
-  digitalWrite(LARGE_LED, LOW);
-  digitalWrite(SMALL_LED, LOW);
-  digitalWrite(BAD_LED, LOW);
+  digitalWrite(LARGE_LED, HIGH);
+  digitalWrite(SMALL_LED, HIGH);
+  digitalWrite(BAD_LED, HIGH);
 
 #ifdef ENABLE_BT_DEBUG
   BTSerial.begin(BT_DEBUG_RATE);
