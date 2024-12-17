@@ -194,16 +194,16 @@ bool create_entities() {
   // create publishers
   battery_pub.setup(node);
 
-  create subscribers
+  // create subscribers
     RCCHECK(rclc_subscription_init_default(
         &command_sub, &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(agrobot_interfaces, msg, LEDCommand),
         NAMESPACE "/LED/command"));
 
-  create executor
+  // create executor
     RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
 
-  add callbacks to executor
+  // add callbacks to executor
     RCSOFTCHECK(rclc_executor_add_subscription(&executor, &command_sub, &command_msg, &command_sub_callback, ON_NEW_DATA));
 
 #ifdef ENABLE_BT_DEBUG
