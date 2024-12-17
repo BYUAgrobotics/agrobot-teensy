@@ -114,9 +114,9 @@ void error_loop() {
  * @param command_msgin The received frost_interfaces/msg/UCommand message
  */
 
- void led_command_callback(const void * msgin) {
-    const agrobot_interfaces__msg__LEDCommand * msg = (const agrobot_interfaces__msg__LEDCommand *)msgin;
-    int8_t led_value = msg->command;
+ void led_command_callback(const void * command_msgin) {
+    const agrobot_interfaces__msg__LEDCommand * led_command_msg = (const agrobot_interfaces__msg__LEDCommand *)command_msgin;
+    int8_t led_value = led_command_msg->command;
     Serial.printf("Received LED command: %d\n", led_value);
 
      // First, turn off all LEDs
@@ -204,7 +204,7 @@ bool create_entities() {
     RCSOFTCHECK(rclc_executor_init(&executor, &support.context, CALLBACK_TOTAL, &allocator));
 
   // add callbacks to executor
-    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &led_command_sub, &msg, &led_command_callback, ON_NEW_DATA));
+    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &led_command_sub, &led_command_msg, &led_command_callback, ON_NEW_DATA));
 
 #ifdef ENABLE_BT_DEBUG
   BTSerial.println("[INFO] Micro-ROS entities created successfully");
