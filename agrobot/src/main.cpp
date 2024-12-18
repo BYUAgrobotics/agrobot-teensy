@@ -20,6 +20,7 @@
  */
 
 #include "battery_pub.h"
+#include "tof_pub.h" //TODO: make sure this works
 
 #include <SoftwareSerial.h>
 // #include <frost_interfaces/msg/u_command.h>
@@ -59,6 +60,7 @@
 
 // sensor update rates
 #define BATTERY_MS 1000 // arbitrary
+#define TOF_MS 500     // arbitrary
 
 // time of last received command (used as a fail safe)
 unsigned long last_received = 0;
@@ -77,6 +79,9 @@ rcl_node_t node;
 
 // publisher objects
 BatteryPub battery_pub;
+
+// TOF publisher object
+TofPub tof_pub;
 
 // sensor objects
 SoftwareSerial BTSerial(BT_MC_RX, BT_MC_TX);
@@ -263,6 +268,28 @@ void read_battery() {
   battery_pub.publish(voltage, current);
 }
 
+void read_tof_sensor() {
+if (tofLeft.isDataReady()) {
+  int left_distance = tofLeft.getDistance_mm();
+  }
+
+
+  if (tofRight.isDataReady()) {
+    int right_distance = tofRight.getDistance_mm();
+  }
+
+  if (tofFront.isDataReady()) {
+    int front_distance = tofFront.getDistance_mm();
+  }
+
+  if (tofBack.isDataReady()) {
+    int back_distance = tofBack.getDistance_mm();
+  }
+
+  // publish the TOF sensor data
+  tof_pub.publish(left_distance, right_distance, front_distance);
+}
+
 /**
  * This function is the main loop for the micro-ROS node. It manages the
  * connection and disconnection of the micro-ROS agent, actuator positions,
@@ -306,7 +333,7 @@ void loop() {
   case AGENT_CONNECTED:
     EXECUTE_EVERY_N_MS(200, state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_CONNECTED : AGENT_DISCONNECTED;);
     if (state == AGENT_CONNECTED) {
-
+      
       //////////////////////////////////////////////////////////
       // EXECUTES WHEN THE AGENT IS CONNECTED
       //////////////////////////////////////////////////////////
@@ -314,6 +341,10 @@ void loop() {
 #ifdef ENABLE_BATTERY
       EXECUTE_EVERY_N_MS(BATTERY_MS, read_battery());
 #endif // ENABLE_BATTERY
+
+#ifdef ENABLE_TOF_SENSORS
+      EXECUTE_EVERY_N_MS(TOF_MS, read_tof_sensor());  //How to run if this has higher baud rate? Also what MS time?
+#endif // ENABLE_TOF_SENSORS
 
       // rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 
