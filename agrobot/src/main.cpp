@@ -270,24 +270,24 @@ void read_battery() {
 
 void read_tof_sensor() {
 if (tofLeft.isDataReady()) {
-  int left_distance = tofLeft.getDistance_mm();
+  float32 left_distance = tofLeft.getDistance_mm();
   }
 
 
   if (tofRight.isDataReady()) {
-    int right_distance = tofRight.getDistance_mm();
+    float32 right_distance = tofRight.getDistance_mm();
   }
 
   if (tofFront.isDataReady()) {
-    int front_distance = tofFront.getDistance_mm();
+    float32 front_distance = tofFront.getDistance_mm();
   }
 
   if (tofBack.isDataReady()) {
-    int back_distance = tofBack.getDistance_mm();
+    float32 back_distance = tofBack.getDistance_mm();
   }
 
-  // publish the TOF sensor data
-  tof_pub.publish(left_distance, right_distance, front_distance);
+  // publish the TOF sensor data [ADD back_distance WHEN able to power all 4 sensors]
+  tof_pub.publish(left_distance, right_distance, front_distance, back_distance);
 }
 
 /**

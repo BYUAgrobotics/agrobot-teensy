@@ -2,10 +2,16 @@
 #define TOF_PUB
 
 #include "publisher.h"
-#include <agrobot_interfaces/msg/TOF.msg>
+#include <Wire.h>
+#include <agrobot_interfaces/msg/Tof.msg>
 
 
-
+/**
+ * @author Brighton Anderson
+ * @date January 2025
+ *
+ * Publisher for battery sensor data.
+ */
 class TofPub : Publisher {
 
 public:
@@ -19,12 +25,12 @@ public:
   /**
    * This function publishes the tof data to the micro-ROS agent.
    *
-   * @param left_dist the distance from left wall (mm)
-   * @param right_dist the distance from right wall (mm)
-   * @param front_dist the distance from front wall (mm)
-   * @param back_dist the distance from back wall (mm)
+   * @param left the distance from left wall (mm)
+   * @param right the distance from right wall (mm)
+   * @param front the distance from front wall (mm)
+   * @param back the distance from back wall (mm)
    */
-  void publish(int left_dist, int right_dist, int front_dist, int back_dist);
+  void publish(float32 left, float32 right, float32 front, float32 back);
   using Publisher::destroy;
 
 private:
