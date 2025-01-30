@@ -87,10 +87,6 @@ void setup() {
   Serial.print("Model: ");
   Serial.println(tofRight.getSensorModel());
 
-  // digitalWrite(EN1, HIGH);
-  // digitalWrite(EN2, HIGH);
-  // delay(20);
-
   // Initialize third sensor (front)
   digitalWrite(EN3, HIGH);  // Enable front sensor
   delay(50);                // Wait for the sensor to power up
@@ -114,28 +110,28 @@ void setup() {
   Serial.print("Model: ");
   Serial.println(tofFront.getSensorModel());
 
-  // // Initialize fourth sensor (back)
-  // digitalWrite(EN4, HIGH);  // Enable back sensor
-  // delay(50);                // Wait for the sensor to power up
+  // Initialize fourth sensor (back)
+  digitalWrite(EN4, HIGH);  // Enable back sensor
+  delay(50);                // Wait for the sensor to power up
 
-  // Serial.print("Initializing back TMF8801 sensor...");
-  // while(tofBack.begin() != 0) {
-  //   Serial.println("failed.");
-  //   delay(1000);
-  // }
-  // Serial.println("done.");
+  Serial.print("Initializing back TMF8801 sensor...");
+  while(tofBack.begin() != 0) {
+    Serial.println("failed.");
+    delay(1000);
+  }
+  Serial.println("done.");
   
-  // // Set I2C address for fourth sensor
-  // tofBack.setI2CAddress(4);  // Set to address 3
+  // Set I2C address for fourth sensor
+  tofBack.setI2CAddress(4);  // Set to address 3
 
-  // // Print Fourth sensor info
-  // Serial.println("Back Sensor:");
-  // Serial.print("Software Version: ");
-  // Serial.println(tofBack.getSoftwareVersion());
-  // Serial.print("Unique ID: ");
-  // Serial.println(tofBack.getUniqueID(), HEX);
-  // Serial.print("Model: ");
-  // Serial.println(tofBack.getSensorModel());
+  // Print Fourth sensor info
+  Serial.println("Back Sensor:");
+  Serial.print("Software Version: ");
+  Serial.println(tofBack.getSoftwareVersion());
+  Serial.print("Unique ID: ");
+  Serial.println(tofBack.getUniqueID(), HEX);
+  Serial.print("Model: ");
+  Serial.println(tofBack.getSensorModel());
 
 
 
@@ -143,43 +139,43 @@ void setup() {
   tofLeft.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
   tofRight.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
   tofFront.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
-  // tofBack.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
+  tofBack.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
 
   // Start measurements on both sensors
   tofLeft.startMeasurement(/*cailbMode =*/tofLeft.eModeCalib);
   tofRight.startMeasurement(/*cailbMode =*/tofRight.eModeCalib);
   tofFront.startMeasurement(/*cailbMode =*/tofFront.eModeCalib);
-  // tofBack.startMeasurement(/*cailbMode =*/tofBack.eModeCalib);
+  tofBack.startMeasurement(/*cailbMode =*/tofBack.eModeCalib);
 }
 
-void loop() {
+// void loop() {
 
-  if (tofLeft.isDataReady()) {
-    Serial.print("Left Distance = ");
-    Serial.print(tofLeft.getDistance_mm());
-    Serial.print(" mm    ");
-  }
+//   if (tofLeft.isDataReady()) {
+//     Serial.print("Left Distance = ");
+//     Serial.print(tofLeft.getDistance_mm());
+//     Serial.print(" mm    ");
+//   }
 
 
-  if (tofRight.isDataReady()) {
-    Serial.print("Right Distance = ");
-    Serial.print(tofRight.getDistance_mm());
-    Serial.println(" mm");
-  }
+//   if (tofRight.isDataReady()) {
+//     Serial.print("Right Distance = ");
+//     Serial.print(tofRight.getDistance_mm());
+//     Serial.println(" mm");
+//   }
 
-  if (tofFront.isDataReady()) {
-    Serial.print("Front Distance = ");
-    Serial.print(tofFront.getDistance_mm());
-    Serial.print(" mm    ");
-  }
+//   if (tofFront.isDataReady()) {
+//     Serial.print("Front Distance = ");
+//     Serial.print(tofFront.getDistance_mm());
+//     Serial.print(" mm    ");
+//   }
 
-  // if (tofBack.isDataReady()) {
-  //   Serial.print("Back Distance = ");
-  //   Serial.print(tofBack.getDistance_mm());
-  //   Serial.println(" mm");
-  // }
+//   // if (tofBack.isDataReady()) {
+//   //   Serial.print("Back Distance = ");
+//   //   Serial.print(tofBack.getDistance_mm());
+//   //   Serial.println(" mm");
+//   // }
 
-  delay(50); // Adjust delay to control the measurement rate
-}
+//   delay(50); // Adjust delay to control the measurement rate
+// }
 
 // TODO: figure out why teensy can't power 4 sensors at the same time, then uncomment all the back sensor code
