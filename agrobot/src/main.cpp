@@ -21,7 +21,7 @@
 
 #include "battery_pub.h"
 #include "tof_pub.h" //TODO: make sure this works
-
+#include "DFRobot_TMF8x01.h"
 #include <SoftwareSerial.h>
 // #include <frost_interfaces/msg/u_command.h>
 
