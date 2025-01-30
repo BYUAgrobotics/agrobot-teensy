@@ -245,11 +245,156 @@ void setup() {
   pinMode(CURRENT_PIN, INPUT);
   pinMode(VOLT_PIN, INPUT);
 
+#ifdef ENABLE_TOF_SENSORS
+#define EN1       2                      // EN pin for left TMF8801
+#define EN2       3                      // EN pin for right TMF8801
+#define EN3       4                      // EN pin for front TMF8801
+#define EN4       5                      // EN pin for back TMF8801
+#define INT      -1                      // INT pin is floating, not used in this demo
+
+// Create two sensor objects, one for each TMF8801
+DFRobot_TMF8801 tofLeft(/*enPin =*/EN1, /*intPin=*/INT);
+DFRobot_TMF8801 tofRight(/*enPin =*/EN2, /*intPin=*/INT);
+DFRobot_TMF8801 tofFront(/*enPin =*/EN3, /*intPin=*/INT);
+DFRobot_TMF8801 tofBack(/*enPin =*/EN4, /*intPin=*/INT);
+
+// Calibration data
+uint8_t caliDataBuf[14] = {0x41,0x57,0x01,0xFD,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04};
+
+// Serial.begin(115200);
+// while(!Serial) {
+//   // Wait for serial port to connect. Needed for native USB port only
+// }
+
+pinMode(EN1, OUTPUT);
+pinMode(EN2, OUTPUT);
+pinMode(EN3, OUTPUT);
+pinMode(EN4, OUTPUT);
+
+// Initially set all EN pins LOW
+digitalWrite(EN1, LOW);
+digitalWrite(EN2, LOW);
+digitalWrite(EN3, LOW);
+digitalWrite(EN4, LOW);
+delay(50); // Give some time for sensors to reset
+
+// Initialize first sensor (left)
+digitalWrite(EN1, HIGH);  // Enable left sensor
+delay(50);                // Wait for the sensor to power up
+
+BTSerial.print("Initializing left TMF8801 sensor...");
+while(tofLeft.begin() != 0) {
+  BTSerial.println("failed.");
+  delay(1000);
+}
+BTSerial.println("done.");
+
+BTSerial.println(tofLeft.getUniqueID(), HEX); // check unique id before resetting address
+
+// Set I2C address for first sensor
+bool addr1 = tofLeft.setI2CAddress(1);  // Set to address 1
+if (addr1){
+  BTSerial.println("failed to set address 1");
+  delay(10);
+}
+else{BTSerial.println("successfully set address 1!");}
+
+// Print first sensor info
+BTSerial.println("Left Sensor:");
+BTSerial.print("Software Version: ");
+BTSerial.println(tofLeft.getSoftwareVersion());
+BTSerial.print("Unique ID: ");
+BTSerial.println(tofLeft.getUniqueID(), HEX);
+BTSerial.print("Model: ");
+BTSerial.println(tofLeft.getSensorModel());
+
+// Initialize second sensor (right)
+digitalWrite(EN2, HIGH);  // Enable right sensor
+delay(50);                // Wait for the sensor to power up
+
+BTSerial.print("Initializing right TMF8801 sensor...");
+while(tofRight.begin() != 0) {
+  BTSerial.println("failed.");
+  delay(1000);
+}
+BTSerial.println("done.");
+
+// Set I2C address for second sensor
+tofRight.setI2CAddress(2);  // Set to address 2
+
+// Print second sensor info
+BTSerial.println("Right Sensor:");
+BTSerial.print("Software Version: ");
+BTSerial.println(tofRight.getSoftwareVersion());
+BTSerial.print("Unique ID: ");
+BTSerial.println(tofRight.getUniqueID(), HEX);
+BTSerial.print("Model: ");
+BTSerial.println(tofRight.getSensorModel());
+
+// Initialize third sensor (front)
+digitalWrite(EN3, HIGH);  // Enable front sensor
+delay(50);                // Wait for the sensor to power up
+
+BTSerial.print("Initializing front TMF8801 sensor...");
+while(tofFront.begin() != 0) {
+  BTSerial.println("failed.");
+  delay(1000);
+}
+BTSerial.println("done.");
+
+// Set I2C address for third sensor
+tofFront.setI2CAddress(3);  // Set to address 3
+
+// Print second sensor info
+BTSerial.println("Front Sensor:");
+BTSerial.print("Software Version: ");
+BTSerial.println(tofFront.getSoftwareVersion());
+BTSerial.print("Unique ID: ");
+BTSerial.println(tofFront.getUniqueID(), HEX);
+BTSerial.print("Model: ");
+BTSerial.println(tofFront.getSensorModel());
+
+// Initialize fourth sensor (back)
+digitalWrite(EN4, HIGH);  // Enable back sensor
+delay(50);                // Wait for the sensor to power up
+
+BTSerial.print("Initializing back TMF8801 sensor...");
+while(tofBack.begin() != 0) {
+  BTSerial.println("failed.");
+  delay(1000);
+}
+BTSerial.println("done.");
+
+// Set I2C address for fourth sensor
+tofBack.setI2CAddress(4);  // Set to address 3
+
+// Print Fourth sensor info
+BTSerial.println("Back Sensor:");
+BTSerial.print("Software Version: ");
+BTSerial.println(tofBack.getSoftwareVersion());
+BTSerial.print("Unique ID: ");
+BTSerial.println(tofBack.getUniqueID(), HEX);
+BTSerial.print("Model: ");
+BTSerial.println(tofBack.getSensorModel());
+
+// Set calibration data for both sensors
+tofLeft.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
+tofRight.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
+tofFront.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
+tofBack.setCalibrationData(caliDataBuf, sizeof(caliDataBuf));
+
+// Start measurements on both sensors
+tofLeft.startMeasurement(/*cailbMode =*/tofLeft.eModeCalib);
+tofRight.startMeasurement(/*cailbMode =*/tofRight.eModeCalib);
+tofFront.startMeasurement(/*cailbMode =*/tofFront.eModeCalib);
+tofBack.startMeasurement(/*cailbMode =*/tofBack.eModeCalib);
+
+
 #ifdef ENABLE_BT_DEBUG
   BTSerial.println("[INFO] Battery Sensor enabled");
 #endif // ENABLE_BT_DEBUG
 #endif // ENABLE_BATTERY
-
+#endif // ENABLE_TOF_SENSORS
   state = WAITING_AGENT;
 }
 
@@ -269,10 +414,9 @@ void read_battery() {
 }
 
 void read_tof_sensor() {
-if (tofLeft.isDataReady()) {
-  float32 left_distance = tofLeft.getDistance_mm();
+  if (tofLeft.isDataReady()) {
+    float32 left_distance = tofLeft.getDistance_mm();
   }
-
 
   if (tofRight.isDataReady()) {
     float32 right_distance = tofRight.getDistance_mm();
