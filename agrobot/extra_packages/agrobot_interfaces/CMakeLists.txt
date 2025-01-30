@@ -16,6 +16,12 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/BatteryStatus.msg"
+  "msg/DriveCommand.msg"
+  "msg/LEDCommand.msg"
+  "msg/ToFData.msg"
+  "srv/IdentifyEgg.srv"
+  "srv/StartFSM.srv"
+  "action/DriveControl.action"
   DEPENDENCIES std_msgs
 )
 

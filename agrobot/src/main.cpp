@@ -55,9 +55,9 @@
 #define VOLT_PIN 18
 #define CURRENT_PIN 17
 #define LED_PIN 13 // Built-in Teensy LED
-#define LARGE_LED 30  // WHITE
-#define SMALL_LED 31  // GREEN
-#define BAD_LED 32    // RED
+#define LARGE_LED 10  // WHITE
+#define SMALL_LED 11  // GREEN
+#define BAD_LED 12    // RED
 
 // sensor baud rates
 #define BT_DEBUG_RATE 9600
@@ -313,6 +313,7 @@ void loop() {
     digitalWrite(LARGE_LED, LOW);
     digitalWrite(SMALL_LED, LOW);
     digitalWrite(BAD_LED, LOW);
+
   } else {
     digitalWrite(LED_PIN, HIGH);
     digitalWrite(LARGE_LED, HIGH);
