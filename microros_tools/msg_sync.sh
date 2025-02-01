@@ -7,5 +7,5 @@ rsync -avc --delete ~/ros2_ws/src/agrobot_interfaces ~/teensy_ws/agrobot/extra_p
 
 cd ~/teensy_ws/agrobot
 pio run --target clean_microros
-pio lib install
+pio pkg install
 pio run

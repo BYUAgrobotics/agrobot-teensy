@@ -1,0 +1,6 @@
+# IdentifyEgg service
+
+# request
+---
+# response
+int8 egg_type # 1: small, 2: large, 3: bad
