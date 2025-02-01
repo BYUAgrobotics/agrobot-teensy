@@ -3,7 +3,7 @@
 
 #include "publisher.h"
 #include <Wire.h>
-#include <agrobot_interfaces/msg/to_f_data.h> //fix this
+#include <agrobot_interfaces/msg/to_f_data.h>
 
 
 /**
@@ -30,11 +30,11 @@ public:
    * @param front the distance from front wall (mm)
    * @param back the distance from back wall (mm)
    */
-  void publish(float32 left, float32 right, float32 front, float32 back);
+  void publish(float left, float right, float front, float back);
   using Publisher::destroy;
 
 private:
-  agrobot_interfaces__msg__Tof msg;
+  agrobot_interfaces__msg__ToFData msg;
 };
 
 #endif // TOF_PUB
