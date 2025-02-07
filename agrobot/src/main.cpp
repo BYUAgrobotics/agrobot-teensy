@@ -29,7 +29,7 @@
 #define ENABLE_TOF_SENSORS
 #define ENABLE_LEDS
 #define ENABLE_BATTERY
-// #define ENABLE_BT_DEBUG
+#define ENABLE_BT_DEBUG
 
 #define EN1       2                      // EN pin for left TMF8801
 #define EN2       3                      // EN pin for right TMF8801
@@ -70,6 +70,9 @@
 
 // time of last received command (used as a fail safe)
 unsigned long last_received = 0;
+
+// TOF Calibration data
+uint8_t caliDataBuf[14] = {0x41,0x57,0x01,0xFD,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04};
 
 // micro-ROS objects
 rclc_support_t support;
@@ -203,10 +206,7 @@ void setup() {
 #endif // ENABLE_BATTERY
 
 #ifdef ENABLE_TOF_SENSORS // TODO: Add ifdefs for BTSerial below
-
-  // Calibration data
-  uint8_t caliDataBuf[14] = {0x41,0x57,0x01,0xFD,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04};
-
+  
   pinMode(EN1, OUTPUT);
   pinMode(EN2, OUTPUT);
   pinMode(EN3, OUTPUT);
